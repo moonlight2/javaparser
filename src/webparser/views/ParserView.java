@@ -1,6 +1,7 @@
 
 package webparser.views;
 
+import webparser.common.ParserObserver;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
@@ -24,8 +25,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableColumn;
 
-import webparser.classes.TableCreator;
+import webparser.views.helper.TableCreator;
+import webparser.common.Observable;
 import webparser.controller.ControllerInterface;
+import webparser.controller.ParserController;
 import webparser.model.ParserModelInterface;
 
 /**
@@ -59,6 +62,7 @@ public class ParserView implements ActionListener, ParserObserver {
         model.registerObserver(this);
         allLinks = new ArrayList();
     }
+
 
     public void update(ArrayList link) {
         tableCreator.addText(link);

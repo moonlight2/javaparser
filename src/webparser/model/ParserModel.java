@@ -4,29 +4,30 @@ package webparser.model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import webparser.classes.Data;
-import webparser.classes.Soup;
-import webparser.classes.Transform;
-import webparser.views.ParserObserver;
+import webparser.common.Observable;
+import webparser.db.Executor;
+import webparser.parser.Soup;
+import webparser.parser.Transform;
+import webparser.common.ParserObserver;
 
 /**
  *
  * @author ilia
  */
-public class ParserModel implements ParserModelInterface {
+public class ParserModel implements ParserModelInterface, webparser.common.Observable {
 
     private String url;
     private Thread myThread;
     private ArrayList observers;
     private ArrayList complete;
     private ArrayList links;
-    private Data db;
+    private Executor db;
 
     public ParserModel() {
         observers = new ArrayList();
         complete = new ArrayList();
         try {
-            db = new Data();
+            db = new Executor();
         } catch (Exception e) {
             e.printStackTrace();
         }

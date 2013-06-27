@@ -7,7 +7,7 @@ package webparser.controller;
 
 
 import java.util.ArrayList;
-import webparser.classes.CheckData;
+import webparser.validator.Validator;
 import webparser.model.ParserModelInterface;
 import webparser.views.ParserView;
 
@@ -15,10 +15,9 @@ public class ParserController implements ControllerInterface {
 
     ParserModelInterface model;
     ParserView view;
-    CheckData check;
 
     public ParserController(ParserModelInterface model) {
-        check = new CheckData();
+
         this.model = model;
         view = new ParserView(this, model);
         view.createView();
@@ -103,7 +102,7 @@ public class ParserController implements ControllerInterface {
         if (url.equals("")) {
             view.confirmMessage("Error", "Enter site url!");
             return false;
-        } else if (!check.checkUrl(url)) {
+        } else if (!Validator.checkUrl(url)) {
             view.confirmMessage("Error", "<html>Enter valid site url!<br>(http://www.site.com)");
             return false;
         } else {

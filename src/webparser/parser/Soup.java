@@ -1,5 +1,5 @@
 
-package webparser.classes;
+package webparser.parser;
 
 import java.io.IOException;
 import java.util.ArrayList;

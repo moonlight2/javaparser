@@ -5,7 +5,8 @@
 package webparser.model;
 
 import java.util.ArrayList;
-import webparser.views.ParserObserver;
+import webparser.common.ParserObserver;
+import webparser.views.ParserView;
 
 /**
  *
@@ -18,10 +19,6 @@ public interface ParserModelInterface {
 	public void stop();
 	
 	public void setURL(String url);
-	
-	public void registerObserver(ParserObserver o);
-	
-	public void removeObserver(ParserObserver o);
 
 	public void setLinks(String page, ArrayList links);
 	
@@ -32,5 +29,9 @@ public interface ParserModelInterface {
 	public void loadLinks(String url);
 
 	public ArrayList getLinks();
+
+    public void registerObserver(ParserObserver parserObserver);
+
+
 
 }

@@ -1,8 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package webparser.classes;
+
+package webparser.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,18 +14,18 @@ import webparser.config.Config;
 /**
  * Class contains all the methods for working with database
  */
-public class Data {
+public class Executor {
 
     private Statement st;
     private Connection con;
 
-    public Data() throws Exception {
+    public Executor() throws Exception {
         Class.forName(Config.JDBC_DRIVER);
         con = DriverManager.getConnection("jdbc:" + Config.DB_TYPE + ":" + Config.DB_NAME, Config.DB_USER, Config.DB_PASS);
     }
 
     public static void main(String[] args) throws Exception {
-        Data d = new Data();
+        Executor d = new Executor();
         System.out.println(d.getPages());
     }
 

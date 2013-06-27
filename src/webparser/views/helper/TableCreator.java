@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package webparser.classes;
+package webparser.views.helper;
 
 import java.util.ArrayList;
 import java.util.Vector;
