@@ -1,33 +1,31 @@
 
 package webparser.model;
 
+import webparser.common.Model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import webparser.common.Observable;
-import webparser.db.Executor;
+import webparser.db.DBHelper;
 import webparser.parser.Soup;
 import webparser.parser.Transform;
-import webparser.common.ParserObserver;
+import webparser.common.Observer;
 
-/**
- *
- * @author ilia
- */
-public class ParserModel implements ParserModelInterface, webparser.common.Observable {
+
+public class ParserModel implements Model, Observable {
 
     private String url;
     private Thread myThread;
     private ArrayList observers;
     private ArrayList complete;
     private ArrayList links;
-    private Executor db;
+    private DBHelper db;
 
     public ParserModel() {
         observers = new ArrayList();
         complete = new ArrayList();
         try {
-            db = new Executor();
+            db = new DBHelper();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,18 +41,22 @@ public class ParserModel implements ParserModelInterface, webparser.common.Obser
         myThread.stop();
     }
 
+    @Override
     public void setURL(String url) {
         this.url = url;
     }
 
+    @Override
     public void setLinks(String page, ArrayList links) {
         db.insertLinks(page, links);
     }
 
+    @Override
     public void updateLinks(String page, ArrayList links) {
         db.updateLinks(page, links);
     }
 
+    @Override
     public void deleteLinks(String url) {
         db.deleteLinks(url);
     }
@@ -64,6 +66,7 @@ public class ParserModel implements ParserModelInterface, webparser.common.Obser
      *
      * @param url - url page to which links will be loaded.
      */
+    @Override
     public void loadLinks(String url) {
         ArrayList links = db.getLinksByUrl(url);
         for (int x = 0; x < links.size(); x++) {
@@ -74,16 +77,19 @@ public class ParserModel implements ParserModelInterface, webparser.common.Obser
     /**
      * Returns a list of all domains that are stored in the database.
      */
+    @Override
     public ArrayList getLinks() {
         links = db.getPages();
         return links;
     }
 
-    public void registerObserver(ParserObserver o) {
+    @Override
+    public void registerObserver(Observer o) {
         observers.add(o);
     }
 
-    public void removeObserver(ParserObserver o) {
+    @Override
+    public void removeObserver(Observer o) {
         int i = observers.indexOf(o);
         if (i >= 0) {
             observers.remove(i);
@@ -97,9 +103,10 @@ public class ParserModel implements ParserModelInterface, webparser.common.Obser
      * @param link - An array that contains the name,
      * @param link quantity of inbound links and the level of nesting
      */
+    @Override
     public void notifyObservers(ArrayList link) {
         for (int i = 0; i < observers.size(); i++) {
-            ParserObserver observer = (ParserObserver) observers.get(i);
+            Observer observer = (Observer) observers.get(i);
             observer.update(link);
         }
     }
@@ -111,7 +118,7 @@ public class ParserModel implements ParserModelInterface, webparser.common.Obser
      */
     public void notifyObservers(boolean finish) {
         for (int i = 0; i < observers.size(); i++) {
-            ParserObserver observer = (ParserObserver) observers.get(i);
+            Observer observer = (Observer) observers.get(i);
             observer.update((boolean) finish);
         }
     }
@@ -182,6 +189,7 @@ public class ParserModel implements ParserModelInterface, webparser.common.Obser
 
     private class RunParser implements Runnable {
 
+        @Override
         public void run() {
             try {
                 go(url);

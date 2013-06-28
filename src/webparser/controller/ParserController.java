@@ -1,22 +1,18 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package webparser.controller;
 
-
-
+import webparser.common.Сontroller;
 import java.util.ArrayList;
 import webparser.validator.Validator;
-import webparser.model.ParserModelInterface;
+import webparser.model.ParserModel;
 import webparser.views.ParserView;
 
-public class ParserController implements ControllerInterface {
+public class ParserController implements Сontroller {
 
-    ParserModelInterface model;
+    ParserModel model;
     ParserView view;
 
-    public ParserController(ParserModelInterface model) {
+    public ParserController(ParserModel model) {
 
         this.model = model;
         view = new ParserView(this, model);
@@ -92,10 +88,6 @@ public class ParserController implements ControllerInterface {
         view.clearLinksArray();
         view.clearTable();
         model.loadLinks(url);
-    }
-
-    public void errorMessage() {
-        view.confirmMessage("Error", "Select an url from the list!");
     }
 
     private boolean checkUrl(String url) {

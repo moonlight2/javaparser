@@ -1,7 +1,7 @@
 
 package webparser.views;
 
-import webparser.common.ParserObserver;
+import webparser.common.Observer;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
@@ -27,18 +27,19 @@ import javax.swing.table.TableColumn;
 
 import webparser.views.helper.TableCreator;
 import webparser.common.Observable;
-import webparser.controller.ControllerInterface;
+import webparser.common.Сontroller;
 import webparser.controller.ParserController;
-import webparser.model.ParserModelInterface;
+import webparser.common.Model;
+import webparser.model.ParserModel;
 
 /**
  * This class contains all the methods for building a graphical interface and
  * interact with.
  */
-public class ParserView implements ActionListener, ParserObserver {
+public class ParserView implements ActionListener, Observer {
 
-    ParserModelInterface model;
-    ControllerInterface controller;
+    Model model;
+    Сontroller controller;
     TableCreator tableCreator;
     ArrayList allLinks;
     private JTextArea text;
@@ -53,7 +54,7 @@ public class ParserView implements ActionListener, ParserObserver {
     private DefaultListModel lm;
     private JList list;
 
-    public ParserView(ControllerInterface controller, ParserModelInterface model) {
+    public ParserView(Сontroller controller, ParserModel model) {
         this.controller = controller;
         this.model = model;
         tableCreator = new TableCreator();
@@ -64,12 +65,14 @@ public class ParserView implements ActionListener, ParserObserver {
     }
 
 
+    @Override
     public void update(ArrayList link) {
         tableCreator.addText(link);
         allLinks.add(link);
         infoLabel.setText(Integer.toString(allLinks.size()));
     }
 
+    @Override
     public void update(boolean finish) {
         controller.finish();
     }
@@ -261,6 +264,7 @@ public class ParserView implements ActionListener, ParserObserver {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        
         JButton clickedButton = (JButton) e.getSource();
         String buttonText = clickedButton.getText();
         String url = field.getText();
@@ -274,13 +278,13 @@ public class ParserView implements ActionListener, ParserObserver {
             controller.save(url, allLinks);
         } else if (buttonText.equals("Del")) {
             if (value == null) {
-                controller.errorMessage();
+                confirmMessage("Error", "Select an url from the list!");
                 return;
             }
             controller.delete(value.toString());
         } else if (buttonText.equals("Load")) {
             if (value == null) {
-                controller.errorMessage();
+                confirmMessage("Error", "Select an url from the list!");
                 return;
             }
             controller.load(value.toString());

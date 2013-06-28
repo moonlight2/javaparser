@@ -14,21 +14,22 @@ import webparser.config.Config;
 /**
  * Class contains all the methods for working with database
  */
-public class Executor {
+public class DBHelper {
 
     private Statement st;
     private Connection con;
 
-    public Executor() throws Exception {
+    public DBHelper() throws Exception {
         Class.forName(Config.JDBC_DRIVER);
         con = DriverManager.getConnection("jdbc:" + Config.DB_TYPE + ":" + Config.DB_NAME, Config.DB_USER, Config.DB_PASS);
     }
 
     public static void main(String[] args) throws Exception {
-        Executor d = new Executor();
+        DBHelper d = new DBHelper();
         System.out.println(d.getPages());
     }
 
+    @SuppressWarnings("CallToThreadDumpStack")
     public void deleteLinks(String url) {
         try {
             st = con.createStatement();
@@ -39,11 +40,11 @@ public class Executor {
     }
 
     public void updateLinks(String url, ArrayList links) {
+        
         try {
             st = con.createStatement();
             int id = getId(url);
             st.executeUpdate("DELETE FROM page_links WHERE page_id = '" + id + "'");
-
 
             PreparedStatement prep = con.prepareStatement("INSERT INTO page_links (page_id, link_name, nesting_level, external_links) "
                     + "VALUES (?,?,?,?)");

@@ -2,10 +2,9 @@
 package webparser;
 
 
-import webparser.controller.ControllerInterface;
+import webparser.common.Сontroller;
 import webparser.controller.ParserController;
 import webparser.model.ParserModel;
-import webparser.model.ParserModelInterface;
 
 /**
  * The program for parsing web pages. 
@@ -19,7 +18,7 @@ import webparser.model.ParserModelInterface;
 public class WebParser {
 
 	public static void main(String[] args){
-		ParserModelInterface model     = new ParserModel();
-		ControllerInterface controller = new ParserController(model);
+		ParserModel model     = new ParserModel();
+		Сontroller controller = new ParserController(model);
 	}
 }

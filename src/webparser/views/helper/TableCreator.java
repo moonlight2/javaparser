@@ -1,17 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package webparser.views.helper;
 
 import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
 
-/**
- *
- * @author ilia
- */
 /**
  * Class lets you create and edit interactive tables
  */
@@ -25,10 +18,12 @@ public class TableCreator extends AbstractTableModel {
         fireTableDataChanged();
     }
 
+    @Override
     public int getRowCount() {
         return textData.size();
     }
 
+    @Override
     public int getColumnCount() {
         return 3;
     }
@@ -43,6 +38,7 @@ public class TableCreator extends AbstractTableModel {
         fireTableChanged(null);
     }
 
+    @Override
     public Object getValueAt(int row, int column) {
         ArrayList info = (ArrayList) textData.elementAt(row);
         if (column == 0) {
