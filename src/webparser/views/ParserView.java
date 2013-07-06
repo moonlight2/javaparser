@@ -8,6 +8,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -66,8 +67,8 @@ public class ParserView implements ActionListener, Observer {
 
 
     @Override
-    public void update(ArrayList link) {
-        tableCreator.addText(link);
+    public void update(List link) {
+        tableCreator.addText((ArrayList)link);
         allLinks.add(link);
         infoLabel.setText(Integer.toString(allLinks.size()));
     }
@@ -163,7 +164,7 @@ public class ParserView implements ActionListener, Observer {
         Dimension screenSize = kit.getScreenSize();
         int screenHeight = screenSize.height;
         int screenWidth = screenSize.width;
-        JFrame.setDefaultLookAndFeelDecorated(true);
+        //JFrame.setDefaultLookAndFeelDecorated(true);
         JFrame frame = new JFrame();
         frame.getContentPane().setLayout(new FlowLayout());
 
@@ -198,17 +199,12 @@ public class ParserView implements ActionListener, Observer {
         buttonLoad = new JButton("Load");
         buttonDelete = new JButton("Del");
 
-        buttonStart.setPreferredSize(bd);
-        buttonPause.setPreferredSize(bd);
-        buttonSave.setPreferredSize(bd);
-        buttonLoad.setPreferredSize(bd);
-        buttonDelete.setPreferredSize(bd);
-
-        buttonStart.addActionListener(this);
-        buttonPause.addActionListener(this);
-        buttonSave.addActionListener(this);
-        buttonDelete.addActionListener(this);
-        buttonLoad.addActionListener(this);
+        JButton[] buttons = {buttonStart, buttonPause, buttonSave, buttonLoad, buttonDelete};
+        
+        for (JButton b : buttons) {
+            b.setPreferredSize(bd);
+            b.addActionListener(this);
+        }
 
         JLabel label = new JLabel("Insert site url: ");
 

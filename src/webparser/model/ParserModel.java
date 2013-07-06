@@ -18,7 +18,7 @@ public class ParserModel implements Model, Observable {
     private Thread myThread;
     private ArrayList observers;
     private ArrayList complete;
-    private ArrayList links;
+    private List links;
     private DBHelper db;
 
     public ParserModel() {
@@ -47,12 +47,12 @@ public class ParserModel implements Model, Observable {
     }
 
     @Override
-    public void setLinks(String page, ArrayList links) {
+    public void setLinks(String page, List links) {
         db.insertLinks(page, links);
     }
 
     @Override
-    public void updateLinks(String page, ArrayList links) {
+    public void updateLinks(String page, List links) {
         db.updateLinks(page, links);
     }
 
@@ -68,7 +68,7 @@ public class ParserModel implements Model, Observable {
      */
     @Override
     public void loadLinks(String url) {
-        ArrayList links = db.getLinksByUrl(url);
+        List links = db.getLinksByUrl(url);
         for (int x = 0; x < links.size(); x++) {
             notifyObservers((ArrayList) links.get(x));
         }
@@ -78,7 +78,7 @@ public class ParserModel implements Model, Observable {
      * Returns a list of all domains that are stored in the database.
      */
     @Override
-    public ArrayList getLinks() {
+    public List getLinks() {
         links = db.getPages();
         return links;
     }
@@ -104,7 +104,7 @@ public class ParserModel implements Model, Observable {
      * @param link quantity of inbound links and the level of nesting
      */
     @Override
-    public void notifyObservers(ArrayList link) {
+    public void notifyObservers(List link) {
         for (int i = 0; i < observers.size(); i++) {
             Observer observer = (Observer) observers.get(i);
             observer.update(link);
@@ -194,7 +194,6 @@ public class ParserModel implements Model, Observable {
             try {
                 go(url);
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
@@ -206,13 +205,12 @@ public class ParserModel implements Model, Observable {
      * @return - array with all the links to this page.
      */
     private List<String> getLinks(String page) {
-        List<String> arrayOfLinks = new ArrayList<String>();
         try {
             Soup soup = new Soup();
-            arrayOfLinks = soup.getLinks(page);
+            return soup.getLinks(page);
         } catch (IOException e) {
             System.out.println("Page not found");
         }
-        return arrayOfLinks;
+        return null;
     }
 }

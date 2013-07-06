@@ -1,7 +1,7 @@
 
 package webparser.common;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This interface must implement a class 
@@ -11,7 +11,7 @@ public interface Observer {
 
 	public void createView();
 	
-	public void update(ArrayList link);
+	public void update(List link);
 	
 	public void update(boolean finish);
 }

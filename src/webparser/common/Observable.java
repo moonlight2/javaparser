@@ -1,7 +1,7 @@
 
 package webparser.common;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface Observable {
     
@@ -9,5 +9,5 @@ public interface Observable {
 	
 	public void removeObserver(Observer o);
         
-        public void notifyObservers(ArrayList link);
+        public void notifyObservers(List link);
 }

@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import webparser.config.Config;
 
 
@@ -39,7 +40,7 @@ public class DBHelper {
         }
     }
 
-    public void updateLinks(String url, ArrayList links) {
+    public void updateLinks(String url, List links) {
         
         try {
             st = con.createStatement();
@@ -63,7 +64,7 @@ public class DBHelper {
         }
     }
 
-    public void insertLinks(String url, ArrayList links) {
+    public void insertLinks(String url, List links) {
         try {
             st = con.createStatement();
             st.executeUpdate("INSERT INTO page (page_name) VALUES ('" + url + "') ");
@@ -87,9 +88,9 @@ public class DBHelper {
         }
     }
 
-    public ArrayList getLinksByUrl(String url) {
+    public List getLinksByUrl(String url) {
 
-        ArrayList links = new ArrayList();
+        List links = new ArrayList();
         try {
             PreparedStatement stat = con.prepareStatement(
                     "SELECT "
@@ -127,8 +128,8 @@ public class DBHelper {
         return id;
     }
 
-    public ArrayList getPages() {
-        ArrayList pages = new ArrayList();
+    public List getPages() {
+        List pages = new ArrayList();
         try {
             PreparedStatement stat = con.prepareStatement("SELECT page_name FROM page LIMIT 50");
             ResultSet res = stat.executeQuery();

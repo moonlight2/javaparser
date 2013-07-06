@@ -3,6 +3,7 @@ package webparser.controller;
 
 import webparser.common.Сontroller;
 import java.util.ArrayList;
+import java.util.List;
 import webparser.validator.Validator;
 import webparser.model.ParserModel;
 import webparser.views.ParserView;
@@ -17,7 +18,7 @@ public class ParserController implements Сontroller {
         this.model = model;
         view = new ParserView(this, model);
         view.createView();
-        view.createList(model.getLinks());
+        view.createList((ArrayList)model.getLinks());
         view.disableStopButton();
         view.disableSaveButton();
         view.enableStartButton();
@@ -61,7 +62,7 @@ public class ParserController implements Сontroller {
     @Override
     public void save(String page, ArrayList links) {
         view.disableSaveButton();
-        ArrayList pages = model.getLinks();
+        List pages = model.getLinks();
         for (int x = 0; x < pages.size(); x++) {
             System.out.println(pages.get(x));
         }
