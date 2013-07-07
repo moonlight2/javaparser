@@ -1,4 +1,3 @@
-
 package webparser.views;
 
 import webparser.common.Observer;
@@ -31,6 +30,7 @@ import webparser.common.Observable;
 import webparser.common.Сontroller;
 import webparser.controller.ParserController;
 import webparser.common.Model;
+import webparser.model.Page;
 import webparser.model.ParserModel;
 
 /**
@@ -65,11 +65,21 @@ public class ParserView implements ActionListener, Observer {
         allLinks = new ArrayList();
     }
 
-
     @Override
     public void update(List link) {
-        tableCreator.addText((ArrayList)link);
+        tableCreator.addText((ArrayList) link);
         allLinks.add(link);
+        infoLabel.setText(Integer.toString(allLinks.size()));
+    }
+
+    @Override
+    public void update(Page link) {
+        ArrayList p = new ArrayList();
+        p.add(link.getUrl());
+        p.add(link.getLevel());
+        p.add(link.getLinks());
+        tableCreator.addText(p);
+        allLinks.add(p);
         infoLabel.setText(Integer.toString(allLinks.size()));
     }
 
@@ -200,7 +210,7 @@ public class ParserView implements ActionListener, Observer {
         buttonDelete = new JButton("Del");
 
         JButton[] buttons = {buttonStart, buttonPause, buttonSave, buttonLoad, buttonDelete};
-        
+
         for (JButton b : buttons) {
             b.setPreferredSize(bd);
             b.addActionListener(this);
@@ -260,7 +270,7 @@ public class ParserView implements ActionListener, Observer {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        
+
         JButton clickedButton = (JButton) e.getSource();
         String buttonText = clickedButton.getText();
         String url = field.getText();

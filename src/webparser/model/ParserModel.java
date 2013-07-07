@@ -1,4 +1,3 @@
-
 package webparser.model;
 
 import webparser.common.Model;
@@ -10,7 +9,6 @@ import webparser.db.DBHelper;
 import webparser.parser.Soup;
 import webparser.parser.Transform;
 import webparser.common.Observer;
-
 
 public class ParserModel implements Model, Observable {
 
@@ -96,15 +94,17 @@ public class ParserModel implements Model, Observable {
         }
     }
 
-    /**
-     * Notifies observers when we receive full information about about one of
-     * the pages.
-     *
-     * @param link - An array that contains the name,
-     * @param link quantity of inbound links and the level of nesting
-     */
+
     @Override
     public void notifyObservers(List link) {
+        for (int i = 0; i < observers.size(); i++) {
+            Observer observer = (Observer) observers.get(i);
+            observer.update(link);
+        }
+    }
+
+    public void notifyObservers(Page link) {
+
         for (int i = 0; i < observers.size(); i++) {
             Observer observer = (Observer) observers.get(i);
             observer.update(link);
@@ -123,66 +123,44 @@ public class ParserModel implements Model, Observable {
         }
     }
 
-    /**
-     * Method sends a request to the url and takes all the links that are on it.
-     * Links are sorted into two arrays: with all the links and all completed
-     * links. Method sorts external and internal links on every page of the
-     * completed and notifies observers on the page. Method is executed as long
-     * as the number of completed pages will not match the number of
-     *
-     * @param url - url page to which links will be loaded.
-     */
     public void go(String url) {
+
+        Pages all = new Pages();
+        Pages complete = new Pages();
+
         Transform transform = new Transform();
-        List<ArrayList> all = new ArrayList<ArrayList>();
-        List<ArrayList> complete = new ArrayList<ArrayList>();
-        List<String> allStrings = new ArrayList<String>();
-        List<String> links = new ArrayList<String>();
-        List<String> insideLinks = new ArrayList<String>();
-        List<String> outLinks = new ArrayList<String>();
-        ArrayList endLinksArray = new ArrayList();
 
-        ArrayList first = new ArrayList();
-        first.add(url);
-        first.add(1);
-        all.add(first); // first, add the title page in the list of pages.
-        allStrings.add(url);
+        // first page
+        Page p = new Page(url);
+        p.setLevel(1);
 
-        int count = 0;
-        while (all.size() != complete.size()) {
-            ArrayList currentLinkArray = all.get(count);
-            String currentLink = (String) currentLinkArray.get(0);
+        all.add(p); // add the first page to array of pages
 
-            links = getLinks(currentLink);
-            insideLinks = transform.sortLinks(links, url);
-            outLinks = transform.sortOutsideLinks(links, url);
+        while (all.getSize() > 0) {
 
-            int numberOfOutsideLinks = outLinks.size();
+            Page curPage = all.removeFirst();
 
-            for (String str : insideLinks) {
-                if (allStrings.contains(str) == false) {
-                    allStrings.add(str);
+            List links = getLinks(curPage.getUrl());
 
-                    /**
-                     * Array, which will contain all information about the
-                     * current page
-                     */
-                    ArrayList current = new ArrayList();
-                    current.add(str);
+            if (null != links) {
 
-                    /**
-                     * Nesting level will be one greater than the level of
-                     * nesting of the page from which we get the current
-                     */
-                    int level = (int) currentLinkArray.get(1) + 1;
-                    current.add(level);
-                    all.add(current);
+                List<String> insLinks = transform.sortLinks(links, url);
+                List<String> outLinks = transform.sortOutsideLinks(links, url);
+
+                int OutLinksCount = outLinks.size();
+
+                for (String str : insLinks) {
+
+                    Page page = new Page(str);
+
+                    int level = (int) curPage.getLevel() + 1;
+                    page.setLevel(level);
+                    all.add(page);
                 }
+                curPage.setLinks(OutLinksCount);
+                complete.add(curPage);
+                notifyObservers(curPage);
             }
-            count++;
-            currentLinkArray.add(numberOfOutsideLinks);
-            complete.add(currentLinkArray);
-            notifyObservers(currentLinkArray);
         }
         notifyObservers(true);
     }
@@ -198,18 +176,13 @@ public class ParserModel implements Model, Observable {
         }
     }
 
-    /**
-     * Get all links from url
-     *
-     * @param page - url page to which links will be loaded.
-     * @return - array with all the links to this page.
-     */
+
     private List<String> getLinks(String page) {
         try {
             Soup soup = new Soup();
             return soup.getLinks(page);
         } catch (IOException e) {
-            System.out.println("Page not found");
+            System.out.println("Page " + page + " not found");
         }
         return null;
     }

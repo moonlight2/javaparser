@@ -3,6 +3,7 @@ package webparser.parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,8 +19,8 @@ public class Soup {
      * @return linksArray - an array of references received from the page.
      * @throws IOException - exception is thrown if the page was not found.
      */
-    public ArrayList<String> getLinks(String url) throws IOException {
-        ArrayList<String> linksArray = new ArrayList<String>();
+    public List<String> getLinks(String url) throws IOException {
+        List<String> linksArray = new ArrayList<String>();
         Document doc = Jsoup.connect(url).get();
         Elements links = (Elements) doc.select("a[href]");
         for (org.jsoup.nodes.Element link : links) {
