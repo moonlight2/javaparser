@@ -1,12 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package webparser.model;
+
+package webparser.entity;
 
 /**
  *
- * @author ilia
+ * Entity Page
  */
 public class Page {
 
@@ -42,12 +39,8 @@ public class Page {
         links = count;
     }
 
+    @Override
     public String toString() {
         return "Page " + getUrl() + " level " + getLevel();
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
     }
 }

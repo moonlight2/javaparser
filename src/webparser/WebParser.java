@@ -1,24 +1,22 @@
-
 package webparser;
-
 
 import webparser.common.Сontroller;
 import webparser.controller.ParserController;
 import webparser.model.ParserModel;
 
 /**
- * The program for parsing web pages. 
- * Determines the number of pages on the site, 
- * the number of external links of each page 
- * and the number of inbound links to each page.
+ * The program is for parsing web pages. Determines the number of pages on the
+ * site, the number of external links of each page and the number of inbound
+ * links to each page.
+ *
  * @author Osipov Ilia
  * @email iosipov83@gmail.com
  * @version 1.0
  */
 public class WebParser {
 
-	public static void main(String[] args){
-		ParserModel model     = new ParserModel();
-		Сontroller controller = new ParserController(model);
-	}
+    public static void main(String[] args) {
+        ParserModel model = new ParserModel();
+        Сontroller controller = new ParserController(model);
+    }
 }

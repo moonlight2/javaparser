@@ -1,16 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package webparser.validator;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- *
- * @author ilia
- */
+
 public class Validator {
 
     public static boolean checkUrl(String url) {

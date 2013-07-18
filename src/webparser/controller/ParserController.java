@@ -18,7 +18,7 @@ public class ParserController implements Сontroller {
         this.model = model;
         view = new ParserView(this, model);
         view.createView();
-        view.createList((ArrayList)model.getLinks());
+        view.createList((ArrayList)model.getUrls());
         view.disableStopButton();
         view.disableSaveButton();
         view.enableStartButton();
@@ -62,7 +62,7 @@ public class ParserController implements Сontroller {
     @Override
     public void save(String page, ArrayList links) {
         view.disableSaveButton();
-        List pages = model.getLinks();
+        List pages = model.getUrls();
         for (int x = 0; x < pages.size(); x++) {
             System.out.println(pages.get(x));
         }
@@ -88,7 +88,7 @@ public class ParserController implements Сontroller {
         view.disableSaveButton();
         view.clearLinksArray();
         view.clearTable();
-        model.loadLinks(url);
+        model.getLinks(url);
     }
 
     private boolean checkUrl(String url) {

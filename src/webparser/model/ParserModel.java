@@ -1,5 +1,7 @@
 package webparser.model;
 
+import webparser.entity.PageCollection;
+import webparser.entity.Page;
 import webparser.common.Model;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,14 +16,12 @@ public class ParserModel implements Model, Observable {
 
     private String url;
     private Thread myThread;
-    private ArrayList observers;
-    private ArrayList complete;
+    private List observers;
     private List links;
     private DBHelper db;
 
     public ParserModel() {
         observers = new ArrayList();
-        complete = new ArrayList();
         try {
             db = new DBHelper();
         } catch (Exception e) {
@@ -44,6 +44,15 @@ public class ParserModel implements Model, Observable {
         this.url = url;
     }
 
+    /**
+     * Returns a list of all domains that are stored in the database.
+     */
+    @Override
+    public List getUrls() {
+        links = db.getPages();
+        return links;
+    }
+
     @Override
     public void setLinks(String page, List links) {
         db.insertLinks(page, links);
@@ -60,25 +69,16 @@ public class ParserModel implements Model, Observable {
     }
 
     /**
-     * Returns a list of internal links that are in the database.
-     *
+     * Load links from the database
      * @param url - url page to which links will be loaded.
      */
     @Override
-    public void loadLinks(String url) {
-        List links = db.getLinksByUrl(url);
-        for (int x = 0; x < links.size(); x++) {
-            notifyObservers((ArrayList) links.get(x));
+    public void getLinks(String url) {
+        PageCollection links = db.getLinksByUrl(url);
+        while (links.getSize() > 0) {
+            Page p = links.removeFirst();
+            notifyObservers(p);
         }
-    }
-
-    /**
-     * Returns a list of all domains that are stored in the database.
-     */
-    @Override
-    public List getLinks() {
-        links = db.getPages();
-        return links;
     }
 
     @Override
@@ -94,28 +94,13 @@ public class ParserModel implements Model, Observable {
         }
     }
 
-
-    @Override
-    public void notifyObservers(List link) {
-        for (int i = 0; i < observers.size(); i++) {
-            Observer observer = (Observer) observers.get(i);
-            observer.update(link);
-        }
-    }
-
     public void notifyObservers(Page link) {
-
         for (int i = 0; i < observers.size(); i++) {
             Observer observer = (Observer) observers.get(i);
             observer.update(link);
         }
     }
 
-    /**
-     * Notifies observers when parsing site completed.
-     *
-     * @param finish - Returns true at the close.
-     */
     public void notifyObservers(boolean finish) {
         for (int i = 0; i < observers.size(); i++) {
             Observer observer = (Observer) observers.get(i);
@@ -125,34 +110,28 @@ public class ParserModel implements Model, Observable {
 
     public void go(String url) {
 
-        Pages all = new Pages();
-        Pages complete = new Pages();
-
+        PageCollection all = new PageCollection();
+        PageCollection complete = new PageCollection();
         Transform transform = new Transform();
 
-        // first page
-        Page p = new Page(url);
+        Page p = new Page(url); // first page
         p.setLevel(1);
-
         all.add(p); // add the first page to array of pages
 
         while (all.getSize() > 0) {
 
             Page curPage = all.removeFirst();
-
-            List links = getLinks(curPage.getUrl());
+            List links = getLinksFromPage(curPage.getUrl());
 
             if (null != links) {
 
                 List<String> insLinks = transform.sortLinks(links, url);
                 List<String> outLinks = transform.sortOutsideLinks(links, url);
 
-                int OutLinksCount = outLinks.size();
+                int OutLinksCount = outLinks.size(); // get the number of external links
 
                 for (String str : insLinks) {
-
                     Page page = new Page(str);
-
                     int level = (int) curPage.getLevel() + 1;
                     page.setLevel(level);
                     all.add(page);
@@ -176,8 +155,7 @@ public class ParserModel implements Model, Observable {
         }
     }
 
-
-    private List<String> getLinks(String page) {
+    private List<String> getLinksFromPage(String page) {
         try {
             Soup soup = new Soup();
             return soup.getLinks(page);

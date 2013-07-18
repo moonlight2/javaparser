@@ -10,6 +10,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import webparser.config.Config;
+import webparser.entity.Page;
+import webparser.entity.PageCollection;
 
 
 /**
@@ -49,7 +51,8 @@ public class DBHelper {
 
             PreparedStatement prep = con.prepareStatement("INSERT INTO page_links (page_id, link_name, nesting_level, external_links) "
                     + "VALUES (?,?,?,?)");
-            for (int x = 0; x < links.size(); x++) {
+            int size = links.size();
+            for (int x = 0; x < size; x++) {
                 prep.setInt(1, id);
                 prep.setString(2, (String) ((ArrayList) links.get(x)).get(0));
                 prep.setInt(3, (Integer) ((ArrayList) links.get(x)).get(1));
@@ -72,7 +75,8 @@ public class DBHelper {
 
             PreparedStatement prep = con.prepareStatement("INSERT INTO page_links (page_id, link_name, nesting_level, external_links) "
                     + "VALUES (?,?,?,?)");
-            for (int x = 0; x < links.size(); x++) {
+            int size = links.size();
+            for (int x = 0; x < size; x++) {
                 prep.setInt(1, id);
                 prep.setString(2, (String) ((ArrayList) links.get(x)).get(0));
                 prep.setInt(3, (Integer) ((ArrayList) links.get(x)).get(1));
@@ -88,9 +92,9 @@ public class DBHelper {
         }
     }
 
-    public List getLinksByUrl(String url) {
+    public PageCollection getLinksByUrl(String url) {
 
-        List links = new ArrayList();
+        PageCollection links = new PageCollection();
         try {
             PreparedStatement stat = con.prepareStatement(
                     "SELECT "
@@ -101,10 +105,10 @@ public class DBHelper {
                     + "LIMIT 4000");
             ResultSet res = stat.executeQuery();
             while (res.next()) {
-                ArrayList link = new ArrayList();
-                link.add(res.getString(1));
-                link.add(res.getInt(2));
-                link.add(res.getInt(3));
+                Page link = new Page(res.getString(1));
+                link.setLevel(res.getInt(2));
+                link.setLinks(res.getInt(3));
+
                 links.add(link);
             }
         } catch (SQLException e) {

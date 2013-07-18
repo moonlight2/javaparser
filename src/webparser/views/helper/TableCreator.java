@@ -1,20 +1,19 @@
-
 package webparser.views.helper;
 
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 /**
- * Class lets you create and edit interactive tables
+ * This class lets you create and edit interactive tables
  */
 public class TableCreator extends AbstractTableModel {
 
-    Vector textData = new Vector();
+    List textData = new ArrayList();
     String colNames[] = {"Page name", "Level", "External links"};
 
     public void addText(ArrayList text) {
-        textData.addElement(text);
+        textData.add(text);
         fireTableDataChanged();
     }
 
@@ -40,7 +39,7 @@ public class TableCreator extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int row, int column) {
-        ArrayList info = (ArrayList) textData.elementAt(row);
+        List info = (ArrayList) textData.get(row);
         if (column == 0) {
             return info.get(0);
         } else if (column == 1) {

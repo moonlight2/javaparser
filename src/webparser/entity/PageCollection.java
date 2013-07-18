@@ -1,9 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package webparser.model;
 
+package webparser.entity;
+
+import webparser.entity.Page;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
@@ -13,13 +11,13 @@ import java.util.LinkedHashSet;
  *
  * @author ilia
  */
-public class Pages {
+public class PageCollection {
 
     private Deque pages;
     private HashSet urls;
     String s;
 
-    public Pages() {
+    public PageCollection() {
         urls = new LinkedHashSet();
         pages = new ArrayDeque();
     }

@@ -26,17 +26,12 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableColumn;
 
 import webparser.views.helper.TableCreator;
-import webparser.common.Observable;
 import webparser.common.Сontroller;
 import webparser.controller.ParserController;
 import webparser.common.Model;
-import webparser.model.Page;
+import webparser.entity.Page;
 import webparser.model.ParserModel;
 
-/**
- * This class contains all the methods for building a graphical interface and
- * interact with.
- */
 public class ParserView implements ActionListener, Observer {
 
     Model model;
@@ -65,12 +60,6 @@ public class ParserView implements ActionListener, Observer {
         allLinks = new ArrayList();
     }
 
-    @Override
-    public void update(List link) {
-        tableCreator.addText((ArrayList) link);
-        allLinks.add(link);
-        infoLabel.setText(Integer.toString(allLinks.size()));
-    }
 
     @Override
     public void update(Page link) {
@@ -174,7 +163,6 @@ public class ParserView implements ActionListener, Observer {
         Dimension screenSize = kit.getScreenSize();
         int screenHeight = screenSize.height;
         int screenWidth = screenSize.width;
-        //JFrame.setDefaultLookAndFeelDecorated(true);
         JFrame frame = new JFrame();
         frame.getContentPane().setLayout(new FlowLayout());
 
@@ -189,7 +177,6 @@ public class ParserView implements ActionListener, Observer {
 
         JScrollPane scroller = new JScrollPane(table);
         table.setPreferredScrollableViewportSize(new Dimension(450, 200));
-
 
         scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -224,6 +211,8 @@ public class ParserView implements ActionListener, Observer {
         Box box4 = Box.createHorizontalBox();
         Box box5 = Box.createHorizontalBox();
 
+        Box[] boxes = {box1, box2, box3, box4, box5};
+
         box1.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         box2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         box3.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -252,12 +241,9 @@ public class ParserView implements ActionListener, Observer {
         box5.add(Box.createRigidArea(new Dimension(7, 0)));
         box5.add(buttonDelete);
 
-
-        frame.getContentPane().add(box1);
-        frame.getContentPane().add(box2);
-        frame.getContentPane().add(box3);
-        frame.getContentPane().add(box4);
-        frame.getContentPane().add(box5);
+        for (Box b : boxes) {
+            frame.getContentPane().add(b);
+        }
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 500);
@@ -266,7 +252,7 @@ public class ParserView implements ActionListener, Observer {
     }
 
     /**
-     * The method allows to communicate with the controller.
+     * The method allows view to communicate with the controller.
      */
     @Override
     public void actionPerformed(ActionEvent e) {
