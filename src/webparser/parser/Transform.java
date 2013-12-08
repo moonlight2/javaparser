@@ -4,7 +4,7 @@
  */
 package webparser.parser;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -13,11 +13,11 @@ import java.util.List;
 public class Transform {
 
     public List sortLinks(List<String> arrayOfLinks, String url) {
-        List<String> newArray = new ArrayList<String>();
+        
+        List<String> newArray = new LinkedList<String>();
 
         for (String link : arrayOfLinks) {
             if ((link.indexOf(url) == 0)) {
-
                 if (newArray.contains(link) == false) {
                     newArray.add(link);
                 }
@@ -27,7 +27,8 @@ public class Transform {
     }
 
     public List sortOutsideLinks(List<String> arrayOfLinks, String url) {
-        List<String> newArray = new ArrayList<String>();
+        
+        List<String> newArray = new LinkedList<String>();
 
         for (String link : arrayOfLinks) {
             if ((link.indexOf(url) == -1)) {

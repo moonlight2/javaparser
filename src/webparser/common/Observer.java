@@ -9,7 +9,7 @@ public interface Observer {
 
     public void createView();
 
-    public void update(Page link);
+    public void update(Page p);
 
     public void update(boolean finish);
 }

@@ -29,15 +29,14 @@ import webparser.views.helper.TableCreator;
 import webparser.common.Сontroller;
 import webparser.controller.ParserController;
 import webparser.common.Model;
+import webparser.common.Observable;
+import webparser.common.View;
 import webparser.entity.Page;
-import webparser.model.ParserModel;
 
-public class ParserView implements ActionListener, Observer {
+public class ParserView extends View implements ActionListener, Observer {
 
-    Model model;
-    Сontroller controller;
     TableCreator tableCreator;
-    ArrayList allLinks;
+    List<List> allLinks;
     private JTextArea text;
     private JTextField field;
     private JButton buttonPause;
@@ -49,21 +48,25 @@ public class ParserView implements ActionListener, Observer {
     private JTable table;
     private DefaultListModel lm;
     private JList list;
-
-    public ParserView(Сontroller controller, ParserModel model) {
-        this.controller = controller;
-        this.model = model;
+    
+    
+    public ParserView() {
         tableCreator = new TableCreator();
         lm = new DefaultListModel();
         table = new JTable(tableCreator);
-        model.registerObserver(this);
         allLinks = new ArrayList();
     }
-
-
+    
+    @Override
+    public void attachToModel() {
+        if (null != model) {
+            model.getManager().registerObserver(this);
+        }
+    }
+    
     @Override
     public void update(Page link) {
-        ArrayList p = new ArrayList();
+        List p = new ArrayList<>();
         p.add(link.getUrl());
         p.add(link.getLevel());
         p.add(link.getLinks());
@@ -77,71 +80,87 @@ public class ParserView implements ActionListener, Observer {
         controller.finish();
     }
 
+    @Override
     public void enableStopButton() {
         buttonPause.setEnabled(true);
     }
 
+    @Override
     public void disableStopButton() {
         buttonPause.setEnabled(false);
     }
 
+    @Override
     public void enableLoadButton() {
         buttonLoad.setEnabled(true);
     }
 
+    @Override
     public void disableLoadButton() {
         buttonLoad.setEnabled(false);
     }
 
+    @Override
     public void enableDeleteButton() {
         buttonDelete.setEnabled(true);
     }
 
+    @Override
     public void disableDeleteButton() {
         buttonDelete.setEnabled(false);
     }
 
+    @Override
     public void enableStartButton() {
         buttonStart.setEnabled(true);
     }
 
+    @Override
     public void disableStartButton() {
         buttonStart.setEnabled(false);
     }
 
+    @Override
     public void enableSaveButton() {
         buttonSave.setEnabled(true);
     }
 
+    @Override
     public void disableSaveButton() {
         buttonSave.setEnabled(false);
     }
 
-    public void createList(ArrayList links) {
+    @Override
+    public void createList(List links) {
         for (int x = 0; x < links.size(); x++) {
             lm.addElement(links.get(x));
         }
     }
 
+    @Override
     public void clearTable() {
         tableCreator.deleteData();
         createTable();
     }
 
+    @Override
     public void clearLinksArray() {
         allLinks.clear();
     }
 
+    @Override
     public void addToList(String url) {
         DefaultListModel lm = (DefaultListModel) list.getModel();
         lm.addElement(url);
     }
 
+    @Override
     public void removeFromList(String url) {
         DefaultListModel lm = (DefaultListModel) list.getModel();
         lm.removeElement(url);
     }
 
+    @Override
     public void confirmMessage(String header, String message) {
         JOptionPane.showConfirmDialog(null, message, header, JOptionPane.PLAIN_MESSAGE);
     }
@@ -164,6 +183,7 @@ public class ParserView implements ActionListener, Observer {
         int screenHeight = screenSize.height;
         int screenWidth = screenSize.width;
         JFrame frame = new JFrame();
+        frame.setResizable(false);
         frame.getContentPane().setLayout(new FlowLayout());
 
         JLabel infoText = new JLabel("Pages on site: ");

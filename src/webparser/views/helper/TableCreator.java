@@ -9,10 +9,10 @@ import javax.swing.table.AbstractTableModel;
  */
 public class TableCreator extends AbstractTableModel {
 
-    List textData = new ArrayList();
+    List<List> textData = new ArrayList<>();
     String colNames[] = {"Page name", "Level", "External links"};
 
-    public void addText(ArrayList text) {
+    public void addText(List<String> text) {
         textData.add(text);
         fireTableDataChanged();
     }

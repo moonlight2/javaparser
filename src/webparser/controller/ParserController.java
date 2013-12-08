@@ -1,27 +1,35 @@
-
 package webparser.controller;
 
 import webparser.common.Сontroller;
-import java.util.ArrayList;
 import java.util.List;
+import webparser.common.Model;
+import webparser.common.View;
 import webparser.validator.Validator;
-import webparser.model.ParserModel;
-import webparser.views.ParserView;
+import webparser.views.builder.ViewDirector;
 
 public class ParserController implements Сontroller {
 
-    ParserModel model;
-    ParserView view;
+    Model model;
+    View view;
 
-    public ParserController(ParserModel model) {
-
+    public ParserController(Model model) {
         this.model = model;
-        view = new ParserView(this, model);
+    }
+
+    public ParserController(Model model, View view) {
+        this.model = model;
+        this.view = view;
+    }
+
+    @Override
+    public void run() {
+        if (null == view) {
+            createViewInstance();
+        }
         view.createView();
-        view.createList((ArrayList)model.getUrls());
+        view.createList(model.getUrls());
         view.disableStopButton();
         view.disableSaveButton();
-        view.enableStartButton();
     }
 
     @Override
@@ -60,7 +68,7 @@ public class ParserController implements Сontroller {
     }
 
     @Override
-    public void save(String page, ArrayList links) {
+    public void save(String page, List links) {
         view.disableSaveButton();
         List pages = model.getUrls();
         for (int x = 0; x < pages.size(); x++) {
@@ -104,4 +112,11 @@ public class ParserController implements Сontroller {
         return true;
     }
 
+    protected void createViewInstance() {
+        try {
+            view = new ViewDirector().createMainView(null, this, model);
+        } catch (NoSuchFieldException ex) {
+            ex.printStackTrace();
+        }
+    }
 }

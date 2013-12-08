@@ -4,9 +4,11 @@ import webparser.entity.Page;
 
 public interface Observable {
 
-    public void registerObserver(Observer o);
+    public abstract void registerObserver(Observer o);
 
-    public void removeObserver(Observer o);
+    public abstract void removeObserver(Observer o);
 
-    public void notifyObservers(Page link);
+    public abstract void notifyObservers(Page p);
+    
+    public abstract void notifyObservers(boolean finish);
 }

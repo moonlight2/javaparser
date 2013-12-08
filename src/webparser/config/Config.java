@@ -4,7 +4,7 @@
  */
 package webparser.config;
 
-public  class Config {
+public final class Config {
 
 	public static final String DB_NAME = "db/linksdb17";
 	public static final String JDBC_DRIVER = "org.sqlite.JDBC";

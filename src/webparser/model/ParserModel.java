@@ -5,6 +5,7 @@ import webparser.entity.Page;
 import webparser.common.Model;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import webparser.common.Observable;
 import webparser.db.DBHelper;
@@ -12,16 +13,17 @@ import webparser.parser.Soup;
 import webparser.parser.Transform;
 import webparser.common.Observer;
 
-public class ParserModel implements Model, Observable {
+
+public class ParserModel extends Model {
 
     private String url;
     private Thread myThread;
-    private List observers;
-    private List links;
+    private List<String> links;
     private DBHelper db;
+    private Observable observerManager;
 
     public ParserModel() {
-        observers = new ArrayList();
+        observerManager = new ObserverManager();
         try {
             db = new DBHelper();
         } catch (Exception e) {
@@ -30,11 +32,18 @@ public class ParserModel implements Model, Observable {
         links = db.getPages();
     }
 
+    @Override
+    public Observable getManager() {
+        return observerManager;
+    }
+    
+    @Override
     public void start() {
         myThread = new Thread(new RunParser());
         myThread.start();
     }
 
+    @Override
     public void stop() {
         myThread.stop();
     }
@@ -54,12 +63,12 @@ public class ParserModel implements Model, Observable {
     }
 
     @Override
-    public void setLinks(String page, List links) {
+    public void setLinks(String page, List<List> links) {
         db.insertLinks(page, links);
     }
 
     @Override
-    public void updateLinks(String page, List links) {
+    public void updateLinks(String page, List<List> links) {
         db.updateLinks(page, links);
     }
 
@@ -70,6 +79,7 @@ public class ParserModel implements Model, Observable {
 
     /**
      * Load links from the database
+     *
      * @param url - url page to which links will be loaded.
      */
     @Override
@@ -77,34 +87,7 @@ public class ParserModel implements Model, Observable {
         PageCollection links = db.getLinksByUrl(url);
         while (links.getSize() > 0) {
             Page p = links.removeFirst();
-            notifyObservers(p);
-        }
-    }
-
-    @Override
-    public void registerObserver(Observer o) {
-        observers.add(o);
-    }
-
-    @Override
-    public void removeObserver(Observer o) {
-        int i = observers.indexOf(o);
-        if (i >= 0) {
-            observers.remove(i);
-        }
-    }
-
-    public void notifyObservers(Page link) {
-        for (int i = 0; i < observers.size(); i++) {
-            Observer observer = (Observer) observers.get(i);
-            observer.update(link);
-        }
-    }
-
-    public void notifyObservers(boolean finish) {
-        for (int i = 0; i < observers.size(); i++) {
-            Observer observer = (Observer) observers.get(i);
-            observer.update((boolean) finish);
+            observerManager.notifyObservers(p);
         }
     }
 
@@ -125,7 +108,7 @@ public class ParserModel implements Model, Observable {
 
             if (null != links) {
 
-                List<String> insLinks = transform.sortLinks(links, url);
+                List<String> insLinks = (LinkedList<String>) transform.sortLinks(links, url);
                 List<String> outLinks = transform.sortOutsideLinks(links, url);
 
                 int OutLinksCount = outLinks.size(); // get the number of external links
@@ -138,19 +121,57 @@ public class ParserModel implements Model, Observable {
                 }
                 curPage.setLinks(OutLinksCount);
                 complete.add(curPage);
-                notifyObservers(curPage);
+                observerManager.notifyObservers(curPage);
             }
         }
-        notifyObservers(true);
+        observerManager.notifyObservers(true);
     }
 
     private class RunParser implements Runnable {
-
+        
         @Override
         public void run() {
             try {
                 go(url);
             } catch (Exception e) {
+            }
+        }
+    }
+
+    public final class ObserverManager implements Observable {
+
+        private List<Observer> observers;
+
+        public ObserverManager() {
+            observers = new ArrayList();
+        }
+
+        @Override
+        public void registerObserver(Observer o) {
+            observers.add(o);
+        }
+
+        @Override
+        public void removeObserver(Observer o) {
+            int i = observers.indexOf(o);
+            if (i >= 0) {
+                observers.remove(i);
+            }
+        }
+
+        @Override
+        public void notifyObservers(Page p) {
+            for (int i = 0; i < observers.size(); i++) {
+                Observer observer = (Observer) observers.get(i);
+                observer.update(p);
+            }
+        }
+
+        @Override
+        public void notifyObservers(boolean finish) {
+            for (int i = 0; i < observers.size(); i++) {
+                Observer observer = (Observer) observers.get(i);
+                observer.update((boolean) finish);
             }
         }
     }

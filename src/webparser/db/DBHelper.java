@@ -55,7 +55,7 @@ public class DBHelper {
             for (int x = 0; x < size; x++) {
                 prep.setInt(1, id);
                 prep.setString(2, (String) ((ArrayList) links.get(x)).get(0));
-                prep.setInt(3, (Integer) ((ArrayList) links.get(x)).get(1));
+                prep.setInt(3, (Integer)((ArrayList) links.get(x)).get(1));
                 prep.setInt(4, (Integer) ((ArrayList) links.get(x)).get(2));
                 prep.addBatch();
             }

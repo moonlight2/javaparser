@@ -1,5 +1,6 @@
 package webparser;
 
+import webparser.common.Model;
 import webparser.common.Сontroller;
 import webparser.controller.ParserController;
 import webparser.model.ParserModel;
@@ -16,7 +17,8 @@ import webparser.model.ParserModel;
 public class WebParser {
 
     public static void main(String[] args) {
-        ParserModel model = new ParserModel();
+        Model model = new ParserModel();
         Сontroller controller = new ParserController(model);
+        controller.run();
     }
 }
