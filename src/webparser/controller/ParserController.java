@@ -24,7 +24,7 @@ public class ParserController implements Сontroller {
     @Override
     public void run() {
         if (null == view) {
-            createViewInstance();
+            view = createViewInstance();
         }
         view.createView();
         view.createList(model.getUrls());
@@ -55,7 +55,7 @@ public class ParserController implements Сontroller {
 
     @Override
     public void start(String url) {
-        if (checkUrl(url)) {
+        if (new ControllerValidator().checkUrl(url)) {
             view.clearLinksArray();
             view.clearTable();
             view.disableSaveButton();
@@ -99,24 +99,28 @@ public class ParserController implements Сontroller {
         model.getLinks(url);
     }
 
-    private boolean checkUrl(String url) {
-        if (url.equals("")) {
-            view.confirmMessage("Error", "Enter site url!");
-            return false;
-        } else if (!Validator.checkUrl(url)) {
-            view.confirmMessage("Error", "<html>Enter valid site url!<br>(http://www.site.com)");
-            return false;
-        } else {
-            model.setURL(url);
+    private class ControllerValidator {
+
+        public boolean checkUrl(String url) {
+            if (url.equals("")) {
+                view.confirmMessage("Error", "Enter site url!");
+                return false;
+            } else if (!Validator.checkUrl(url)) {
+                view.confirmMessage("Error", "<html>Enter valid site url!<br>(http://www.site.com)");
+                return false;
+            } else {
+                model.setURL(url);
+            }
+            return true;
         }
-        return true;
     }
 
-    protected void createViewInstance() {
+    protected View createViewInstance() {
         try {
             view = new ViewDirector().createMainView(null, this, model);
         } catch (NoSuchFieldException ex) {
             ex.printStackTrace();
         }
+        return view;
     }
 }
